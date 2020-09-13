@@ -15,7 +15,31 @@
 #import <Foundation/Foundation.h>
 
 // Partial header for CBBlueLightClient in private CoreBrightness API
+typedef struct {
+    int hour;
+    int minute;
+} BlueLightTime;
+
+typedef struct {
+    BlueLightTime fromTime;
+    BlueLightTime toTime;
+} BlueLightSchedule;
+
+typedef struct {
+    BOOL active;
+    BOOL enabled;
+    BOOL sunSchedulePermitted;
+    int mode;
+    BlueLightSchedule schedule;
+    unsigned long long disableFlags;
+    BOOL available;
+} BlueLightStatus;
+
+// Partial header for CBBlueLightClient in private CoreBrightness API
 @interface CBBlueLightClient : NSObject
 - (BOOL)setStrength:(float)strength commit:(BOOL)commit;
+- (BOOL)setStrength:(float)strength withPeriod:(float)period commit:(BOOL)commit;
+- (BOOL)getStrength:(float *)strength;
 - (BOOL)setEnabled:(BOOL)enabled;
+- (BOOL)getBlueLightStatus:(BlueLightStatus *)status;
 @end

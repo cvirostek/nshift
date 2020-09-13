@@ -16,10 +16,23 @@
 #import "CBBlueLightClient.h"
 
 int main(int argc, const char * argv[]) {
-    if (argc == 1) { return 0; }
-    float strength = [[NSString stringWithUTF8String:argv[1]] floatValue] / 100;
     CBBlueLightClient *client = [[CBBlueLightClient alloc] init];
-    if (strength != 0.0) { [client setStrength:strength commit:true]; }
-    [client setEnabled:(strength != 0.0)];
+    BlueLightStatus status;
+    [client getBlueLightStatus:&status];
+    if (argc == 1) {
+        float strength;
+        [client getStrength:&strength];
+        printf("%.2f\n", status.enabled ? strength : 0);
+    }
+    else if (argc == 2) {
+        float strength = [[NSString stringWithUTF8String:argv[1]] floatValue];
+        if (strength == 0 && status.enabled) {
+            [client setEnabled:false];
+        }
+        else if (strength > 0 && !status.enabled) {
+            [client setEnabled:true];
+        }
+        [client setStrength:strength withPeriod:0 commit:true];
+    }
     return 0;
 }
